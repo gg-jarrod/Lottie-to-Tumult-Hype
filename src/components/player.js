@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Lottie from 'react-lottie';
+import Dropzone from 'react-dropzone';
 
 class Player extends Component {
   constructor(){
@@ -9,6 +10,7 @@ class Player extends Component {
     contName: 'animation_container',
     layoutName: '',
     layouts: [300, 450, 900],
+    layoutsHeader: [],
     output: []
   };
 
@@ -57,10 +59,18 @@ deleteLayout = (v) => {
   this.setState({
     layouts: this.state.layouts
   });
+
+  console.log(this.state.layoutsHeader);
+  console.log(this.state.output);
 }
 
 buttonClick = () => {
-  this.state.output = [];
+  let x = [];
+
+  this.setState({
+    output: x,
+    layoutsHeader: this.state.layouts
+  });
 
   for (let i=0; i < this.state.layouts.length; i++) {
     this.state.output.push(
@@ -71,6 +81,9 @@ buttonClick = () => {
   this.setState({
     output: this.state.output
   });
+
+  console.log(this.state.layoutsHeader);
+  console.log(this.state.output);
 }
 
 render() {
@@ -92,16 +105,16 @@ render() {
           <div className="gds-form-group" data-gds-form-group="">
             <label className="gds-form-group__label">Layout Sizes</label>
             <input className="gds-form-group__text-input" type="text" id="input-layout" placeholder="Enter Text" value={ this.state.layoutName } onChange={ this.layoutChange } onKeyPress={ this.addLayout }/>
-            {this.state.layouts.map((v) => {
-              return <div className="gds-tag gds-tag--with-button-sm gds-tag--primary gds-tag--sm">{v}
+            {this.state.layouts.map((v, index) => {
+              return <div className="gds-tag gds-tag--with-button-sm gds-tag--primary gds-tag--sm" key={ index }>{v}
                 <button className="gds-tag__button gds-tag__button--primary gds-tag__button--sm" onClick={ this.deleteLayout.bind(this, v) }/>
               </div>;
             }) }
           </div>
           <button type="button" className="gds-button -m-r-1 gds-button--sm gds-button--default" onClick={ this.buttonClick }>Generate Code</button>
-          {this.state.output.map((v) => {
-          return <div>
-            <label className="gds-form-group__label">Javascrtipt Action for { this.state.layouts[v] }</label>
+          {this.state.output.map((v, index) => {
+          return <div key={ index }>
+            <label className="gds-form-group__label">Javascrtipt Action for { this.state.layoutsHeader[index] }</label>
             <p>{v}</p>
             </div>;
           })}
