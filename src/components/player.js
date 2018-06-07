@@ -1,128 +1,125 @@
 import React, { Component } from 'react';
-import Lottie from 'react-lottie';
+import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
+import Lottie from 'react-lottie';
 
 class Player extends Component {
   constructor(){
     super();
-
-    this.state = { dataName: '',
-    contName: 'animation_container',
-    layoutName: '',
-    layouts: [300, 450, 900],
-    layoutsHeader: [],
-    output: []
-  };
-
-}
-
-dataChange = (event) => {
-  const re = /^[\w-.]+$/;
-
-  if (event.target.value === '' || re.test(event.target.value)) {
-    localStorage.setItem('dataName', event.target.value);
-    this.setState({ dataName: event.target.value });
-
+    this.state = { firstDrop: true,
+                   animData: null,
+                   dropText: 'Click or Drop JSON Animation Data'
+    };
   }
-}
 
-contChange = (event) => {
-  const re = /^[\w-]+$/;
-  if (event.target.value === '' || re.test(event.target.value)) {
-    localStorage.setItem('contName', event.target.value);
-    this.setState({ contName: event.target.value });
+  onDropAccepted = (files) => {
+    let obj;
+    let objString;
+
+    let reader = new FileReader();
+    reader.onload = function(event) {
+     obj = JSON.parse(event.target.result);
+     objString = JSON.stringify(obj);
+
+     //JSON validation
+     if (objString.substr(0,5) === '{"v":') {
+       this.props.onUpdate(files[0].name);
+       this.setState({
+         firstDrop: false,
+         animData: obj
+       });
+       let elem = document.getElementById('dropzone');
+       elem.style.opacity = 0;
+       this.resetDropText();
+     } else {
+       this.onDropRejected();
+       return null;
+     }
+
+    }.bind(this);
+    reader.readAsText(files[0]);
   }
-}
 
-layoutChange = (event) => {
-  const re = /^[\w-]+$/;
-  if (event.target.value === '' || re.test(event.target.value)) {
-    this.setState({ layoutName: event.target.value });
-  }
-}
+  onDropRejected = () => {
+    let elem = document.getElementById('dropzone');
+    setTimeout( () => {
+      elem.classList.add('rejectDrop-onDrop');
+    }, 20);
+    
+    this.setState({
+      dropText: 'Error - Please Upload Lottie JSON Animation Data'
+    });
 
-addLayout = (event) => {
-  if (event.key === 'Enter') {
-    this.setState({ layouts: [...this.state.layouts, this.state.layoutName] });
-    localStorage.setItem('contName', event.target.value);
-    this.setState({ layoutName: '' });
-  }
-}
-
-deleteLayout = (v) => {
-  for (let i = 0; i < this.state.layouts.length; i++) {
-    if (this.state.layouts[i] == v) {
-      this.state.layouts.splice(i, 1);
+    if (this.state.firstDrop === false) {
+      setTimeout( () => {
+        elem.style.opacity = 0;
+        setTimeout( () => {
+          this.setState({
+            dropText: 'Click or Drop JSON Animation Data'
+          });
+        }, 550);
+      }, 2000);
     }
   }
 
-  this.setState({
-    layouts: this.state.layouts
-  });
-
-  console.log(this.state.layoutsHeader);
-  console.log(this.state.output);
-}
-
-buttonClick = () => {
-  let x = [];
-
-  this.setState({
-    output: x,
-    layoutsHeader: this.state.layouts
-  });
-
-  for (let i=0; i < this.state.layouts.length; i++) {
-    this.state.output.push(
-      `The data is ${ this.state.dataName }. The container is ${ this.state.contName }. The layout is ${ this.state.layouts[i] }. `
-    );
+  resetDropText = () => {
+    setTimeout( () => {
+      this.setState({
+        dropText: 'Click or Drop JSON Animation Data'
+      });
+    }, 550);
   }
 
-  this.setState({
-    output: this.state.output
-  });
+  onDragEnter = () => {
+    let elem = document.getElementById('dropzone');
+    elem.style.opacity = 1;
+  }
 
-  console.log(this.state.layoutsHeader);
-  console.log(this.state.output);
+  onDragLeave = () => {
+    if (this.state.firstDrop === false) {
+      let elem = document.getElementById('dropzone');
+      elem.style.opacity = 0;
+    }
+  }
+
+  render() {
+    let params = {
+      loop: true,
+      autoplay: true,
+      animationData: this.state.animData,
+      rendererSettings: {
+      preserveAspectRatio: 'xMidYMid  meet'
+      }
+    };
+
+    return (
+        <div id="player" className="gds-card gds-flex__item player-container player-firstdrop">
+          <div className="gds-card player">
+            <div className="player-background"/>
+            <div className="lottie-player">
+              <Lottie options={ params }/>
+            </div>
+            <Dropzone id="dropzone"
+                      className="gds-landing-pad"
+                      accept="application/json"
+                      activeClassName="activeDrop"
+                      rejectClassName="rejectDrop"
+                      multiple="false"
+                      onDropAccepted = { this.onDropAccepted }
+                      onDropRejected = { this.onDropRejected }
+                      onDragEnter = { this.onDragEnter }
+                      onDragLeave = { this.onDragLeave }
+            >
+            { this.state.dropText }
+            </Dropzone>
+          </div>
+        </div>
+    );
+  }
 }
 
-render() {
-  return (
-    <div style={ {margin: '48px'} }>
-      <div className="gds-flex">
-        <div className="gds-card gds-flex__item player-container" >
-          <div className="gds-html-preview"/>
-        </div>
-        <div className="gds-card gds-flex__item code-container">
-          <div className="gds-form-group" data-gds-form-group="">
-            <label className="gds-form-group__label">Animation Data</label>
-            <input className="gds-form-group__text-input" type="text" id="input-data" placeholder="Enter Text" value={ this.state.dataName } onChange={ this.dataChange }/>
-          </div>
-          <div className="gds-form-group" data-gds-form-group="">
-            <label className="gds-form-group__label">Container Name</label>
-            <input className="gds-form-group__text-input" type="text" id="input-container" placeholder="Enter Text" value={ this.state.contName } onChange={ this.contChange }/>
-          </div>
-          <div className="gds-form-group" data-gds-form-group="">
-            <label className="gds-form-group__label">Layout Sizes</label>
-            <input className="gds-form-group__text-input" type="text" id="input-layout" placeholder="Enter Text" value={ this.state.layoutName } onChange={ this.layoutChange } onKeyPress={ this.addLayout }/>
-            {this.state.layouts.map((v, index) => {
-              return <div className="gds-tag gds-tag--with-button-sm gds-tag--primary gds-tag--sm" key={ index }>{v}
-                <button className="gds-tag__button gds-tag__button--primary gds-tag__button--sm" onClick={ this.deleteLayout.bind(this, v) }/>
-              </div>;
-            }) }
-          </div>
-          <button type="button" className="gds-button -m-r-1 gds-button--sm gds-button--default" onClick={ this.buttonClick }>Generate Code</button>
-          {this.state.output.map((v, index) => {
-          return <div key={ index }>
-            <label className="gds-form-group__label">Javascrtipt Action for { this.state.layoutsHeader[index] }</label>
-            <p>{v}</p>
-            </div>;
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-}
+Player.propTypes = {
+  onUpdate: PropTypes.func
+};
 
 export default Player;

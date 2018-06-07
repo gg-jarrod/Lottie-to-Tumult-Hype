@@ -1,11 +1,15 @@
 header {
+  position: absolute;
   width: 100%;
-  height: 150px;
+  height: 140px;
+  padding: 0 36px;
+  z-index: 100;
 
   .logo {
     position: absolute;
     height: 72px;
-    margin: 12px 24px;
+    top: 30px;
+    left: 26px;
   }
 
   div{
@@ -14,38 +18,128 @@ header {
     right:0;
     padding: 36px;
   }
-}
 
-footer {
-  position: fixed;
-  bottom: 0;
-  left: -5%;
-  right: -5%;
-  height: 100px;
+  h1 {
+    margin-bottom: 6px;
+  }
 
-  .loop-animation {
-    bottom: -30%;
-    position: absolute;
-    width: 100%;
-    transform: scaleY(.6);
+  a {
+    margin-left: 36px;
   }
 }
 
-.gds-card {
-  margin: 48px;
+@media only screen and (max-width: 700px) {
+  header {
+    width: 700px;
+  }
+}
+
+pre {
+  margin: 0;
+}
+
+.main-container {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  padding: 140px 36px 36px 36px;
+}
+
+@media only screen and (max-width: 700px) {
+  .main-container {
+    width: 700px;
+  }
+}
+
+@media only screen and (max-height: 540px) {
+  .main-container {
+    height: 540px;
+  }
+}
+
+.form-container {
+  width: 60%;
+  height: 100%;
+  margin: 0 0 0 -1px;
+  padding: 16px 24px 24px 24px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  overflow-y: scroll;
+  transition: all 500ms cubic-bezier(0.25, 0, 0.5, 1);
+}
+
+.form-firstdrop {
+  padding: 0;
+  width: 0%;
+}
+
+.force-select {
+  user-select: all;
+  overflow: hidden;
+}
+
+.generate-button {
+  width: 100%;
 }
 
 .player-container {
+  width: 40%;
   margin: 0;
   padding: 24px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  transition: all 500ms cubic-bezier(0.25, 0, 0.5, 1);
 }
 
-.code-container {
+.player {
+  height: 100%;
   margin: 0;
-  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
-.gds-html-preview {
-  height: inherit;
-  opacity: .5;
+.player-firstdrop {
+  width: 100%;
+}
+
+.player-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml;base54,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Aa%3D%22http%3A%2F%2Fns.adobe.com%2FAdobeSVGViewerExtensions%2F3.0%2F%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2220px%22%20height%3D%2220px%22%20viewBox%3D%220%200%2020%2020%22%20style%3D%22enable-background%3Anew%200%200%2020%2020%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E.st0%7Bfill%3A%23FFFFFF%3B%7D.st1%7Bfill%3A%23D5D5D5%3B%7D%3C%2Fstyle%3E%3Crect%20class%3D%22st0%22%20width%3D%2210%22%20height%3D%2210%22%2F%3E%3Crect%20x%3D%2210%22%20class%3D%22st1%22%20width%3D%2210%22%20height%3D%2210%22%2F%3E%3Crect%20y%3D%2210%22%20class%3D%22st1%22%20width%3D%2210%22%20height%3D%2210%22%2F%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20class%3D%22st0%22%20width%3D%2210%22%20height%3D%2210%22%2F%3E%3C%2Fsvg%3E");
+  opacity: .35;
+}
+
+.gds-landing-pad {
+  // background: rgba(255,255,255,0.9);
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: 2px dashed #999999;
+  outline-offset: -24px;
+  z-index: 3;
+  transition: all 0.5s ease-in-out;
+  padding: 32px;
+}
+
+.activeDrop {
+  background-color:rgba(255,255,255,0.9);
+}
+
+.rejectDrop {
+  background-color:rgba(255,204,192,0.9);
+}
+
+.rejectDrop-onDrop {
+  background-color:rgba(255,204,192,0.9);
+}
+
+.lottie-player {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 2;
 }
